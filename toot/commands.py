@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import json
 import sys
 
 from toot import api, config
@@ -346,3 +347,13 @@ def notifications(app, user, args):
 def tui(app, user, args):
     from .tui.app import TUI
     TUI.create(app, user).run()
+
+
+def print_following(res):
+    print(json.dumps(res, indent=4))
+
+
+def following(app, user, args):
+    account = api.verify_credentials(app, user)
+    res = api.following(app, user, account)
+    print_following(res)

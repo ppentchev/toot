@@ -430,6 +430,12 @@ ACCOUNTS_COMMANDS = [
         require_auth=True,
     ),
     Command(
+        name="following",
+        description="List the followed accounts",
+        arguments=[],
+        require_auth=True,
+    ),
+    Command(
         name="mute",
         description="Mute an account",
         arguments=[

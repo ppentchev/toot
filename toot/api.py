@@ -3,7 +3,7 @@
 import re
 import uuid
 
-from urllib.parse import urlparse, urlencode, quote
+from urllib.parse import urlparse, urlencode, quote, parse_qs
 
 from toot import http, CLIENT_NAME, CLIENT_WEBSITE
 from toot.exceptions import AuthenticationError
@@ -290,4 +290,16 @@ def clear_notifications(app, user):
 
 def get_instance(domain, scheme="https"):
     url = "{}://{}/api/v1/instance".format(scheme, domain)
-    return http.anon_get(url).json()
+    return http.anon_get(url)
+
+
+def following(app, user, account):
+    url = '/api/v1/accounts/{}/following'.format(account['id'])
+    resp = http.get(app, user, url)
+    res = resp.json()
+    while 'next' in resp.links:
+        next_url = urlparse(resp.links['next']['url'])
+        params = {key: list(value)[0] for key, value in parse_qs(next_url.query).items()}
+        resp = http.get(app, user, url, params)
+        res.extend(resp.json())
+    return res
